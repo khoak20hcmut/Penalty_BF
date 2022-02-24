@@ -1,0 +1,27 @@
+language: python
+os: linux
+
+python:
+  - 3.8
+  
+before_install:
+    - sudo apt-get install pandoc
+
+install:
+    - pip install coveralls
+    - pip install .[docs]
+
+script:
+    - coverage run setup.py test
+  
+after_success:
+    - make -C docs html
+    - coveralls
+
+deploy:
+    provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    local_dir: docs/build/html
+    on:
+        branch: master
